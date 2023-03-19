@@ -108,8 +108,20 @@ exports.database = () => {
         });
     },
 
-    deleteTask: async ({ taskId }) => {
-      return await knex('tasks').where('task_id', taskId).del();
+    deleteTask: async ({ taskId, userId}) => {
+      return await knex('tasks').where('task_id', taskId).where('user_id', userId).del();
+    },
+    deleteTodo: async ({ todoId , userId}) => {
+      return await knex('tasks')
+        .where('todo_id', todoId)
+        .where('user_id', userId)
+        .del()
+        .then(async ()=> {
+          return await knex('todos')
+            .where('todo_id', todoId)
+            .where('user_id', userId)
+            .del();
+        });
     },
     addFriend: async ({ userId, friendUsername }) => {
       return await knex
@@ -119,14 +131,24 @@ exports.database = () => {
         .first()
         .returning('user_id')
         .then(async (friendUser) => {
-          return await knex('friends').insert({
-            user_id: userId,
-            friend_id: friendUser.user_id,
-          });
+          if(friendUser && friendUser.user_id!=userId){
+            return await knex('friends').insert({
+              user_id: userId,
+              friend_id: friendUser.user_id,
+            });
+          }
+          return false;
         });
     },
     getFriends: async ({ userId }) => {
-      return await knex().select('*').from('friends').where('user_id', userId);
+      return await knex()
+        .from('friends')
+        .join('users', 'users.user_id','=', 'friends.friend_id')
+        .select('users.username', 'friends.friend_id')
+        .where('friends.user_id', userId);
+    },
+    deleteFriend: async ({ friendId, userId}) => {
+      return await knex('friends').where('friend_id', friendId).where('user_id', userId).del();
     },
   };
 };

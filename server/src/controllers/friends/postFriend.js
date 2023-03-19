@@ -2,11 +2,15 @@ const { database } = require('../../db');
 
 exports.postFriend = async (req, res) => {
   try {
-    await database().addFriend({
+    const result = await database().addFriend({
       friendUsername: req.body.friend_username,
       userId: req.loggedInUser.id,
     });
-    return res.status(201).send('Friend added');
+    if(result){
+      return res.status(201).send('Friend added');
+    } else {
+      return res.status(400).send('Invalid username');
+    }
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
       res.status(409).send('Friend is already added.');
