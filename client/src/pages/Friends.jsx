@@ -41,7 +41,7 @@ const Friends = (props) => {
       }
     };
     fetchTodos();
-  }, [refresh]);
+  }, [refresh, auth]);
 
   const handleAddFriend = async () => {
     try {

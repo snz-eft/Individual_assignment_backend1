@@ -65,7 +65,7 @@ const Tasks = (props) => {
       }
     };
     fetchTodos();
-  }, [refresh, todoId]);
+  }, [refresh, auth, friendId, todoId]);
 
   const handleDone = async (taskStatus) => {
     try {

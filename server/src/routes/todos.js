@@ -4,7 +4,7 @@ const { postTask } = require('../controllers/tasks/postTask');
 const { getTasks } = require('../controllers/tasks/getTasks');
 const { getTodos } = require('../controllers/todo/getTodos');
 const { postTodo } = require('../controllers/todo/postTodo');
-const { deleteTodo } = require('../controllers/todo/deleteTask');
+const { deleteTodo } = require('../controllers/todo/deleteTodo');
 const { bodyValidation } = require('../middlewares/bodyValidation');
 
 const todos = require('express').Router();

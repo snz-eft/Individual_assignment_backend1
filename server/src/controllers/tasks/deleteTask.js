@@ -2,18 +2,11 @@ const { database } = require('../../db');
 
 exports.deleteTask = async (req, res) => {
   try {
-    const task = await database().getTask({
-      userId: req.loggedInUser.id,
+    await database().deleteTask({
       taskId: req.params.taskId,
+      userId: req.loggedInUser.id,
     });
-    if (task) {
-      await database().deleteTask({
-        taskId: req.params.taskId,
-      });
-      return res.status(200).send('Task deleted');
-    } else {
-      return res.status(403).send('Access denied');
-    }
+    return res.status(200).send('Task deleted');
   } catch (e) {
     return res.status(500).send('Server error');
   }

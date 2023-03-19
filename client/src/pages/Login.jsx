@@ -15,7 +15,7 @@ const Login = () => {
     if (auth.user()) {
       navigate("/todos");
     }
-  }, []);
+  }, [auth, navigate]);
 
   const onLogin = (e) => {
     e.preventDefault();
@@ -34,29 +34,6 @@ const Login = () => {
         }
       }
     );
-    // fetch("http://localhost:5050/auth/login", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     username: user,
-    //     password: pass,
-    //   }),
-    //   credentials: "include",
-    // })
-    //   .then((res) => {
-    //     if (res.ok) {
-    //       setErr(false);
-    //       setSuccess(true);
-    //       navigate("/todos");
-    //     } else {
-    //       setErr(true);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   };
 
   return (

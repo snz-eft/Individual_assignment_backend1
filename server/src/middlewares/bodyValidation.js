@@ -34,8 +34,8 @@ exports.bodyValidation = {
   },
   taskPatch: function bodyValidation (req, res, next) {
     const schema = Joi.object({
-      name: Joi.string().min(3).max(20).required(),
-      done: Joi.string().min(1).max(1).required(),
+      name: Joi.string().min(3).max(20),
+      done: Joi.boolean(),
     });
     const validation = schema.validate(req.body);
     if (validation.error) {
