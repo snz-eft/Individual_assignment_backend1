@@ -7,7 +7,7 @@ const Register = () => {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [success, setSuccess] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState(null);
   const navigate = useNavigate();
 
   const onRegister = (e) => {
@@ -22,16 +22,19 @@ const Register = () => {
         password: pass,
       }),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
           setUser("");
           setPass("");
-          setErr(false);
+          setErr(null);
           setSuccess(true);
-          navigate("/login");
-        } else if (res.status === 409) {
+          setTimeout(() => {
+            navigate("/login");
+          }, 1000);
+        } else if (res.status !== 201) {
           setSuccess(false);
-          setErr(true);
+          const text = await res.text();
+          setErr({ message: text, code: res.status });
         }
       })
       .catch((err) => {});
@@ -77,9 +80,7 @@ const Register = () => {
             </Alert>
           )}
 
-          {err && (
-            <Alert severity="error">This username has already exist!</Alert>
-          )}
+          {err && <Alert severity="error">{err.message}</Alert>}
         </Stack>
       </Container>
     </>

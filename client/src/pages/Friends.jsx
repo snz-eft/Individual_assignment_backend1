@@ -16,6 +16,7 @@ const {
   IconButton,
   Grid,
   TextField,
+  Alert,
 } = require("@mui/material");
 const { default: React, useEffect, useState } = require("react");
 
@@ -24,6 +25,7 @@ const Friends = (props) => {
   const [friends, setFriends] = useState([]);
   const [newFriend, setnewFriend] = useState("");
   const [refresh, setRefresh] = useState(true);
+  const [err, setErr] = useState(null);
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -45,7 +47,7 @@ const Friends = (props) => {
 
   const handleAddFriend = async () => {
     try {
-      await fetch(`http://localhost:5050/friends/add`, {
+      const response = await fetch(`http://localhost:5050/friends/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,6 +55,15 @@ const Friends = (props) => {
         credentials: "include",
         body: JSON.stringify({ friend_username: newFriend }),
       });
+      if (response.ok) {
+        setErr(null);
+      } else if (response.status !== 201) {
+        const text = await response.text();
+        setErr({ message: text, code: response.status });
+        setTimeout(() => {
+          setErr(null);
+        }, 3000);
+      }
 
       setnewFriend("");
       setRefresh(!refresh);
@@ -78,6 +89,7 @@ const Friends = (props) => {
 
   return (
     <Container>
+      {err && <Alert severity="error">{err.message}</Alert>}
       <Typography variant="h3" gutterBottom>
         Friends
       </Typography>

@@ -16,6 +16,7 @@ const {
   IconButton,
   Grid,
   TextField,
+  Alert,
 } = require("@mui/material");
 const { default: React, useEffect, useState } = require("react");
 
@@ -25,6 +26,7 @@ const TodoList = (props) => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
   const [refresh, setRefresh] = useState(true);
+  const [err, setErr] = useState(null);
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -57,11 +59,11 @@ const TodoList = (props) => {
       }
     };
     fetchTodos();
-  }, [refresh]);
+  }, [refresh, auth, friendId]);
 
   const handleAddTodo = async () => {
     try {
-      await fetch(`http://localhost:5050/todos/add`, {
+      const response = await fetch(`http://localhost:5050/todos/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +71,15 @@ const TodoList = (props) => {
         credentials: "include",
         body: JSON.stringify({ name: newTodo }),
       });
-
+      if (response.ok) {
+        setErr(null);
+      } else if (response.status !== 201) {
+        const text = await response.text();
+        setErr({ message: text, code: response.status });
+        setTimeout(() => {
+          setErr(null);
+        }, 3000);
+      }
       setNewTodo("");
       setRefresh(!refresh);
     } catch (e) {
@@ -94,6 +104,8 @@ const TodoList = (props) => {
 
   return (
     <Container>
+      {err && <Alert severity="error">{err.message}</Alert>}
+
       <Typography variant="h3" gutterBottom>
         Todo List
       </Typography>

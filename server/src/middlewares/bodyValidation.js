@@ -12,6 +12,7 @@ exports.bodyValidation = {
     }
     next();
   },
+
   todo: function bodyValidation (req, res, next) {
     const schema = Joi.object({
       name: Joi.string().min(3).max(20).required(),
@@ -22,6 +23,7 @@ exports.bodyValidation = {
     }
     next();
   },
+  
   task: function bodyValidation (req, res, next) {
     const schema = Joi.object({
       name: Joi.string().min(3).max(20).required(),

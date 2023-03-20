@@ -17,6 +17,7 @@ const {
   IconButton,
   Button,
   Grid,
+  Alert,
 } = require("@mui/material");
 const { default: React, useEffect, useState } = require("react");
 
@@ -30,6 +31,7 @@ const Tasks = (props) => {
   const [newTaskName, setNewTaskName] = useState("");
   const [tasks, setTasks] = useState([]);
   const [refresh, setRefresh] = useState(true);
+  const [err, setErr] = useState(null);
   useEffect(() => {
     const fetchTodos = async () => {
       try {
@@ -106,14 +108,27 @@ const Tasks = (props) => {
 
   const handleAddTask = async () => {
     try {
-      await fetch(`http://localhost:5050/todos/${todoId}/tasks/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ name: newTaskName }),
-      });
+      const response = await fetch(
+        `http://localhost:5050/todos/${todoId}/tasks/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ name: newTaskName }),
+        }
+      );
+
+      if (response.ok) {
+        setErr(null);
+      } else if (response.status !== 201) {
+        const text = await response.text();
+        setErr({ message: text, code: response.status });
+        setTimeout(() => {
+          setErr(null);
+        }, 3000);
+      }
 
       setNewTaskName("");
       setRefresh(!refresh);
@@ -124,6 +139,7 @@ const Tasks = (props) => {
 
   return (
     <Container>
+      {err && <Alert severity="error">{err.message}</Alert>}
       <Typography variant="h3" gutterBottom>
         Tasks
       </Typography>
