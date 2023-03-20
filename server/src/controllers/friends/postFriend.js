@@ -9,11 +9,11 @@ exports.postFriend = async (req, res) => {
     if(result){
       return res.status(201).send('Friend added');
     } else {
-      return res.status(400).send('Invalid username');
+      return res.status(404).send('User not found');
     }
   } catch (e) {
     if (e.code === 'ER_DUP_ENTRY') {
-      res.status(409).send('Friend is already added.');
+      res.status(409).send('Friend is already added');
     } else {
       res.status(500).send('Server error');
     }

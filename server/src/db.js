@@ -62,13 +62,6 @@ exports.database = () => {
           }
         });
     },
-    getTodo: async ({ userId, todoId }) => {
-      return await knex('todos')
-        .select('todo_id', 'todo_name')
-        .where('user_id', userId)
-        .where('todo_id', todoId)
-        .first();
-    },
     addTask: async ({ taskName, userId, todoId }) => {
       return await knex('tasks').insert({
         task_name: taskName,
@@ -82,13 +75,6 @@ exports.database = () => {
         .select('*')
         .where('user_id', userId)
         .where('todo_id', todoId);
-    },
-    getTask: async ({ userId, taskId }) => {
-      return await knex('tasks')
-        .select('*')
-        .where('user_id', userId)
-        .where('task_id', taskId)
-        .first();
     },
     patchTask: async ({ taskName, userId, taskId, done }) => {
       return await knex('tasks')

@@ -14,6 +14,6 @@ exports.register = async (req, res) => {
       return res.status(500).send('Server error');
     }
   } else {
-    return res.status(409).send('Already exist');
+    return res.status(409).send('Username already exist');
   }
 };
